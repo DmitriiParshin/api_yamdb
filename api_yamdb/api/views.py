@@ -8,17 +8,22 @@ from rest_framework.viewsets import ModelViewSet
 from api.filters import TitlesFilter
 from api.models import Title, Category, Genre
 from api.permissions import IsAdminOrReadOnly
-from api.serializers import (TitleSerializer, CategorySerializer,
-                             GenreSerializer)
+from api.serializers import (CategorySerializer, GenreSerializer,
+                             TitleReadSerializer, TitleWriteSerializer)
 
 
 class TitleViewSet(ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
     pagination_class = PageNumberPagination
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return TitleReadSerializer
+
+        return TitleWriteSerializer
 
 
 class CategoryViewSet(ModelViewSet):
