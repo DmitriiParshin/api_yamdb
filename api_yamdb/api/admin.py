@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from api.models import Title, Category, Genre
+from users.models import User
 
 
 class TitleAdmin(admin.ModelAdmin):
@@ -26,3 +27,4 @@ class GenreAdmin(admin.ModelAdmin):
 admin.site.register(Title, TitleAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Genre, GenreAdmin)
+admin.site.register(User)
