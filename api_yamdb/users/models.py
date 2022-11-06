@@ -8,15 +8,19 @@ class User(AbstractUser):
         ('moderator', 'moderator'),
         ('admin', 'admin'),
     )
-    username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(max_length=254, unique=True,)
-    first_name = models.CharField(max_length=150,)
-    last_name = models.CharField(max_length=150,)
-    bio = models.TextField(
-        'Биография',
-        blank=True
-    )
-    role = models.CharField(max_length=9, choices=ROLE_CHOICES, default='user')
+    username = models.CharField(
+        'Имя пользователя',
+        max_length=150,
+        unique=True)
+    email = models.EmailField('Электронная почта', max_length=254, unique=True)
+    first_name = models.CharField('Имя', max_length=150, blank=True)
+    last_name = models.CharField('Фамилия', max_length=150, blank=True)
+    bio = models.TextField('Биография', blank=True)
+    role = models.CharField(
+        'Роль',
+        max_length=9,
+        choices=ROLE_CHOICES,
+        default='user')
 
     class Meta:
         verbose_name = 'Пользователь'
