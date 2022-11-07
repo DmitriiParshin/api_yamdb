@@ -24,7 +24,14 @@ class GenreAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+class UserAdmin(admin.ModelAdmin):
+    fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
+    list_display = ('username', 'email', 'first_name',
+                    'last_name', 'bio', 'role')
+    empty_value_display = "-пусто-"
+
+
 admin.site.register(Title, TitleAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Genre, GenreAdmin)
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
