@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from api.views import (
     CategoryViewSet, GenreViewSet,
     TitleViewSet, CommentViewSet,
-    ReviewViewSet
+    ReviewViewSet, signup, get_token
 )
 
 
@@ -25,4 +25,6 @@ router_v1.register(
 
 urlpatterns = [
     path('v1/', include(router_v1.urls)),
+    path('v1/auth/signup/', signup, name='signup'),
+    path('v1/auth/token/', get_token, name='get_token'),
 ]
