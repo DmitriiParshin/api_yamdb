@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import Title
+from reviews.models import Title
 
 from reviews.models import Review
 from reviews.permissions import OwnerOrReadOnly

@@ -2,7 +2,7 @@ import csv
 
 from django.core.management import BaseCommand
 
-from api.models import Category, Genre, Title
+from reviews.models import Category, Genre, Title
 from reviews.models import Review, Comment
 from users.models import User
 
@@ -46,7 +46,6 @@ class Command(BaseCommand):
                 title.genre.add(genre)
                 title.save()
 
-
         with open('static/data/users.csv', 'r', encoding='utf-8') as file:
             reader = csv.reader(file)
             next(reader)
@@ -80,3 +79,4 @@ class Command(BaseCommand):
                                                  author_id=row[3],
                                                  pub_date=row[4])
                 comment.save()
+
