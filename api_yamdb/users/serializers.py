@@ -7,7 +7,17 @@ from users.models import User
 
 
 class UserSerializer(ModelSerializer):
-    username = CharField(required=True,)
+    username = CharField(
+        validators=[
+            UniqueValidator(queryset=User.objects.all())
+        ],
+        required=True,
+    )
+    email = EmailField(
+        validators=[
+            UniqueValidator(queryset=User.objects.all())
+        ]
+    )
 
     class Meta:
         fields = ('username', 'email', 'first_name',
