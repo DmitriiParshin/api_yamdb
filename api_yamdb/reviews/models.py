@@ -19,6 +19,11 @@ class Review(models.Model):
         'Дата добавления', auto_now_add=True, db_index=True,
     )
 
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ('-pub_date',)
+
     def __str__(self):
         return self.text[:settings.OUTPUT_LENGTH]
 
@@ -34,6 +39,11 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True
     )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.text[:settings.OUTPUT_LENGTH]
