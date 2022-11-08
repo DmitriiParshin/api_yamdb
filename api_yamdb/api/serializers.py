@@ -1,9 +1,7 @@
-from rest_framework.serializers import (ModelSerializer, Serializer,
-                                        SlugRelatedField)
+from rest_framework.relations import SlugRelatedField
+from rest_framework.serializers import ModelSerializer
 
 from api.models import Genre, Category, Title
-from users.models import User
-from reviews.models import Comment, Review
 
 
 class CategorySerializer(ModelSerializer):
@@ -40,25 +38,3 @@ class TitleWriteSerializer(ModelSerializer):
     class Meta:
         fields = ('id', 'name', 'year', 'description', 'genre', 'category')
         model = Title
-
-
-class UserSerializer(ModelSerializer):
-    username = serializers.CharField(required=True,)
-
-    class Meta:
-        fields = ('username', 'email', 'first_name',
-                  'last_name', 'bio', 'role')
-        model = User
-
-
-class SignupSerializer(ModelSerializer):
-
-    class Meta:
-        fields = ('email', 'username')
-        model = User
-
-
-class TokenSerializer(Serializer):
-
-    username = serializers.CharField(max_length=150)
-    confirmation_code = serializers.CharField()
