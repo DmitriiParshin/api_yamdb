@@ -61,6 +61,21 @@ class Test05ReviewAPI:
         from django.db.utils import IntegrityError
         title = Title.objects.get(pk=titles[0]["id"])
         review = None
+        try:
+            review = Review.objects.create(
+                text='Текст второго отзыва',
+                score='5',
+                author=admin,
+                title=title
+            )
+        except IntegrityError:
+            pass
+
+        assert review is None, (
+            'Проверьте, что через прямой запрос к Django ORM '
+            'нельзя добавить второй отзыв на то же самое произведение. '
+            'Эта проверка осуществляется на уровне модели.'
+        )
         response = admin_client.put(f'/api/v1/titles/{titles[0]["id"]}/reviews/', data=data)
         code = 405
         assert response.status_code == code, (
