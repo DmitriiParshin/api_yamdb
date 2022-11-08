@@ -10,6 +10,7 @@ class Title(models.Model):
     name = models.CharField(max_length=120)
     year = models.PositiveIntegerField(validators=[
         MinValueValidator(1730), MaxValueValidator(datetime.now().year)])
+    rating = models.IntegerField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     genre = models.ManyToManyField('Genre', blank=True, related_name='titles')
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
@@ -68,6 +69,12 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         ordering = ('-pub_date',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('title', 'author'),
+                name='unique_review'
+            ),
+        ]
 
     def __str__(self):
         return self.text[:settings.OUTPUT_LENGTH]
