@@ -3,8 +3,6 @@ from rest_framework.serializers import (ModelSerializer, Serializer,
 
 from api.models import Genre, Category, Title
 from users.models import User
-
-from rest_framework import serializers
 from reviews.models import Comment, Review
 
 
@@ -44,7 +42,7 @@ class TitleWriteSerializer(ModelSerializer):
         model = Title
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(ModelSerializer):
     username = serializers.CharField(required=True,)
 
     class Meta:
@@ -64,23 +62,3 @@ class TokenSerializer(Serializer):
 
     username = serializers.CharField(max_length=150)
     confirmation_code = serializers.CharField()
-
-
-class ReviewSerializer(ModelSerializer):
-    author = SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
-
-    class Meta:
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
-        model = Review
-
-
-class CommentSerializer(ModelSerializer):
-    author = SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
-
-    class Meta:
-        fields = ('id', 'text', 'author', 'pub_date')
-        model = Comment

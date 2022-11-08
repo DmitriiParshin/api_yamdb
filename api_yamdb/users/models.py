@@ -13,14 +13,14 @@ class User(AbstractUser):
         max_length=150,
         unique=True)
     email = models.EmailField('Электронная почта', max_length=254, unique=True)
-    first_name = models.CharField('Имя', max_length=150, blank=True)
-    last_name = models.CharField('Фамилия', max_length=150, blank=True)
-    bio = models.TextField('Биография', blank=True)
     role = models.CharField(
         'Роль',
         max_length=9,
         choices=ROLE_CHOICES,
         default='user')
+    bio = models.TextField('Биография', blank=True)
+    first_name = models.CharField('Имя', max_length=150, blank=True)
+    last_name = models.CharField('Фамилия', max_length=150, blank=True)
 
     class Meta:
         verbose_name = 'Пользователь'
