@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.filters import TitlesFilter
-from api.models import Title, Category, Genre
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (CategorySerializer, GenreSerializer,
                              TitleReadSerializer, TitleWriteSerializer,)
+from reviews.models import Title, Category, Genre
 
 
 class TitleViewSet(ModelViewSet):
