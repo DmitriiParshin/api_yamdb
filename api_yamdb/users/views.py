@@ -41,11 +41,11 @@ def get_token(request):
     if serializer.is_valid():
         user = get_object_or_404(
             User, username=serializer.validated_data.get('username'))
-    if default_token_generator.check_token(
-        user, serializer.validated_data['confirmation_code']
-    ):
-        token = AccessToken.for_user(user)
-        return Response({'token': str(token)}, status=status.HTTP_200_OK)
+        if default_token_generator.check_token(
+            user, serializer.validated_data['confirmation_code']
+        ):
+            token = AccessToken.for_user(user)
+            return Response({'token': str(token)}, status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
