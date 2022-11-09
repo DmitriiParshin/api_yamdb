@@ -4,6 +4,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from django.db.models import Avg
 
 from api.filters import TitlesFilter
 from api.permissions import IsAdminOrReadOnly
@@ -13,8 +14,8 @@ from reviews.models import Title, Category, Genre
 
 
 class TitleViewSet(ModelViewSet):
-    queryset = Title.objects.all()
-    pagination_class = PageNumberPagination
+    queryset = Title.objects.annotate(
+        Avg("reviews__score")).order_by('name')
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter

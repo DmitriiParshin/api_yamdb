@@ -1,53 +1,40 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework import status
 
 from reviews.models import Title
 
 from reviews.models import Review
-from reviews.permissions import OwnerOrReadOnly
+from reviews.permissions import IsAdminOrOwnerOrReadOnly
 from reviews.serializers import ReviewSerializer, CommentSerializer
 
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (OwnerOrReadOnly,)
-    pagination_class = PageNumberPagination
-
-    def get_title(self):
-        return get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+    permission_classes = (IsAdminOrOwnerOrReadOnly,)
 
     def get_queryset(self):
-        return self.get_title().reviews.all()
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, id=title_id)
+        return title.reviews.select_related('author')
 
     def perform_create(self, serializer):
-        return serializer.save(author=self.request.user,
-                               title=self.get_title())
-
-    def perform_update(self, serializer):
-        super(ReviewViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, serializer):
-        super(ReviewViewSet, self).perform_destroy(serializer)
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, id=title_id)
+        serializer.save(author=self.request.user, title=title)
 
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (OwnerOrReadOnly,)
-    pagination_class = PageNumberPagination
+    permission_classes = (IsAdminOrOwnerOrReadOnly,)
+
+    def get_review(self):
+        return get_object_or_404(Review, id=self.kwargs.get('review_id'))
 
     def get_queryset(self):
-        review_id = self.kwargs['review_id']
-        review = get_object_or_404(Review, pk=review_id)
-        return review.comments.select_related('author')
+        return self.get_review().comments.select_related('author')
 
     def perform_create(self, serializer):
-        review_id = self.kwargs['review_id']
-        review = get_object_or_404(Review, pk=review_id)
-        serializer.save(review=review, author=self.request.user)
+        serializer.save(author=self.request.user, review=self.get_review())
 
-    def perform_update(self, serializer):
-        super(CommentViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, serializer):
-        super(CommentViewSet, self).perform_destroy(serializer)
