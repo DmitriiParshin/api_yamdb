@@ -79,4 +79,3 @@ class Command(BaseCommand):
                                                  author_id=row[3],
                                                  pub_date=row[4])
                 comment.save()
-

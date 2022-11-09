@@ -1,15 +1,15 @@
+from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from django.db.models import Avg
 
 from api.filters import TitlesFilter
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (CategorySerializer, GenreSerializer,
-                             TitleReadSerializer, TitleWriteSerializer,)
+                             TitleReadSerializer, TitleWriteSerializer)
 from reviews.models import Title, Category, Genre
 
 

@@ -1,18 +1,19 @@
+from rest_framework.fields import CurrentUserDefault
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 from rest_framework.exceptions import ValidationError
 
 from reviews.models import Review, Comment, Title
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ReviewSerializer(ModelSerializer):
     title = SlugRelatedField(
         slug_field='name',
         read_only=True,
     )
     author = SlugRelatedField(
-        default=serializers.CurrentUserDefault(),
+        default=CurrentUserDefault(),
         slug_field='username',
         read_only=True
     )
@@ -29,13 +30,12 @@ class ReviewSerializer(serializers.ModelSerializer):
                 )
         return data
 
-
     class Meta:
         fields = ('id', 'text', 'author', 'score', 'pub_date', 'title')
         model = Review
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(ModelSerializer):
     author = SlugRelatedField(read_only=True, slug_field='username')
 
     class Meta:
