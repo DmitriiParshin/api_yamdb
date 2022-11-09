@@ -7,7 +7,17 @@ from users.models import User
 
 
 class UserSerializer(ModelSerializer):
-    username = CharField(required=True,)
+    username = CharField(
+        validators=[
+            UniqueValidator(queryset=User.objects.all())
+        ],
+        required=True,
+    )
+    email = EmailField(
+        validators=[
+            UniqueValidator(queryset=User.objects.all())
+        ]
+    )
 
     class Meta:
         fields = ('username', 'email', 'first_name',
@@ -17,8 +27,8 @@ class UserSerializer(ModelSerializer):
 
 class UserEditSerializer(ModelSerializer):
     class Meta:
-        fields = ("username", "email", "first_name",
-                  "last_name", "bio", "role")
+        fields = ('username', 'email', 'first_name',
+                  'last_name', 'bio', 'role')
         model = User
         read_only_fields = ('role',)
 
@@ -36,8 +46,8 @@ class SignupSerializer(ModelSerializer):
     )
 
     def validate_username(self, value):
-        if value.lower() == "me":
-            raise ValidationError("Username 'me' is not valid")
+        if value.lower() == 'me':
+            raise ValidationError("Нельзя 'me'!!!")
         return value
 
     class Meta:
@@ -46,5 +56,5 @@ class SignupSerializer(ModelSerializer):
 
 
 class TokenSerializer(Serializer):
-    username = CharField(max_length=150)
+    username = CharField()
     confirmation_code = CharField()
