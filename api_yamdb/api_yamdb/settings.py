@@ -122,3 +122,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 DEFAULT_FROM_EMAIL = 'admin@yamdb.com'
+
+LIMIT_USERNAME = 150
+
+LIMIT_EMAIL = 254
+
+LIMIT_CODE = 150

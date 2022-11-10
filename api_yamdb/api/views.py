@@ -23,6 +23,7 @@ from api.serializers import (CategorySerializer, GenreSerializer,
                              SignupSerializer, TokenSerializer)
 from reviews.models import Title, Category, Genre, Review
 from users.models import User
+from django.db import IntegrityError
 
 
 class TitleViewSet(ModelViewSet):
@@ -102,9 +103,6 @@ class UserViewSet(ModelViewSet):
             serializer_class=UserEditSerializer)
     def users_own_profile(self, request):
         user = request.user
-        if request.method == "GET":
-            serializer = self.get_serializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
         if request.method == "PATCH":
             serializer = self.get_serializer(
                 user,
@@ -115,15 +113,24 @@ class UserViewSet(ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 def signup(request):
     serializer = SignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
-    user = get_object_or_404(
-        User, username=serializer.validated_data['username']
-    )
+    try:
+        username = serializer.validated_data.get('username')
+        email = serializer.validated_data.get('email')
+        user, _ = User.objects.get_or_create(
+            username=username,
+            email=email
+        )
+    except IntegrityError:
+        return Response('Это имя или email уже занято',
+                        status.HTTP_400_BAD_REQUEST)
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
         subject='Регистрация в проекте YaMDb',
@@ -139,11 +146,10 @@ def get_token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(
-        User, username=serializer.validated_data['username']
+        User, username=serializer.validated_data.get('username')
     )
     if default_token_generator.check_token(
-            user, serializer.validated_data['confirmation_code']
-    ):
+            user, serializer.validated_data.get('confirmation_code')):
         token = AccessToken.for_user(user)
         return Response({'token': str(token)}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
