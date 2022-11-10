@@ -5,6 +5,7 @@ from reviews.models import Title, Category, Genre, Review, Comment
 
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
+    filter_horizontal = ('genre',)
     fields = ('id', 'name', 'year', 'description', 'category', 'genre')
     list_display = ('id', 'name', 'year', 'description', 'category')
     list_display_links = ('name', 'category')
