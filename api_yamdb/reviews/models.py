@@ -7,8 +7,20 @@ from django.db import models
 from users.models import User
 
 
+class CategoryGenreModel(models.Model):
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.slug
+
+    class Meta:
+        abstract = True
+        ordering = ('name',)
+
+
 class Title(models.Model):
-    name = models.CharField(max_length=120)
+    name = models.CharField(max_length=256)
     year = models.PositiveSmallIntegerField(db_index=True, validators=[
         MinValueValidator(1730), MaxValueValidator(datetime.now().year)])
     description = models.TextField(null=True, blank=True)
@@ -25,30 +37,17 @@ class Title(models.Model):
         return self.name[:settings.OUTPUT_LENGTH]
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=30)
-    slug = models.SlugField(unique=True)
-
-    class Meta:
+class Category(CategoryGenreModel):
+    class Meta(CategoryGenreModel.Meta):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ('name',)
-
-    def __str__(self):
-        return self.slug
 
 
-class Genre(models.Model):
-    name = models.CharField(max_length=30)
-    slug = models.SlugField(unique=True)
+class Genre(CategoryGenreModel):
 
-    class Meta:
+    class Meta(CategoryGenreModel.Meta):
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
-        ordering = ('name',)
-
-    def __str__(self):
-        return self.slug
 
 
 class Review(models.Model):

@@ -6,11 +6,11 @@ class User(AbstractUser):
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     USER = 'user'
-    ROLE_CHOICES = [
+    ROLE_CHOICES = (
         (USER, 'user'),
         (MODERATOR, 'moderator'),
         (ADMIN, 'admin'),
-    ]
+    )
     username = models.CharField(
         'Имя пользователя',
         max_length=150,
@@ -31,7 +31,7 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == self.ADMIN
+        return self.role in (self.ADMIN, self.is_superuser, self.is_staff)
 
     class Meta:
         verbose_name = 'Пользователь'
