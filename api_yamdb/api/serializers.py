@@ -1,14 +1,16 @@
+from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CurrentUserDefault
-from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault, CharField, EmailField
+from rest_framework.serializers import (ModelSerializer, IntegerField,
+                                        Serializer)
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
-from rest_framework.serializers import (ModelSerializer, IntegerField)
 
-from reviews.models import Genre, Category, Title, Review, Comment
+from reviews.models import (Genre, Category, Title, Review, Comment,
+                            get_year_now)
 from users.models import User
 from api.validators import username_me, UsernameRegexValidator
-from django.conf import settings
 
 
 class CategorySerializer(ModelSerializer):
@@ -37,6 +39,10 @@ class TitleReadSerializer(ModelSerializer):
 
 
 class TitleWriteSerializer(ModelSerializer):
+    year = IntegerField(
+        validators=[MinValueValidator(1730),
+                    MaxValueValidator(get_year_now())]
+    )
     genre = SlugRelatedField(
         slug_field='slug', many=True, queryset=Genre.objects.all()
     )
@@ -48,18 +54,19 @@ class TitleWriteSerializer(ModelSerializer):
         fields = ('id', 'name', 'year', 'description', 'genre', 'category')
         model = Title
 
+    def to_representation(self, value):
+        serializer = TitleReadSerializer(value)
+        return serializer.data
+
 
 class ReviewSerializer(ModelSerializer):
-    '''title = SlugRelatedField(
-        slug_field='name',
-        read_only=True,
-    )
-    '''
-
     author = SlugRelatedField(
         default=CurrentUserDefault(),
         slug_field='username',
         read_only=True
+    )
+    score = IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
 
     def validate(self, data):
@@ -105,9 +112,9 @@ class UserEditSerializer(UserSerializer):
         read_only_fields = ('role',)
 
 
-class SignupSerializer(serializers.Serializer):
+class SignupSerializer(Serializer):
     username_validator = UsernameRegexValidator()
-    username = serializers.CharField(
+    username = CharField(
         max_length=settings.LIMIT_USERNAME,
         required=True,
         validators=[username_validator, username_me],
@@ -115,15 +122,15 @@ class SignupSerializer(serializers.Serializer):
             'unique': 'Пользователь с таким именем уже существует!',
         },
     )
-    email = serializers.EmailField(
+    email = EmailField(
         max_length=settings.LIMIT_EMAIL,
         required=True
     )
 
 
-class TokenSerializer(serializers.Serializer):
+class TokenSerializer(Serializer):
     username_validator = UsernameRegexValidator()
-    username = serializers.CharField(
+    username = CharField(
         max_length=settings.LIMIT_USERNAME,
         required=True,
         validators=[username_validator, username_me],
@@ -131,7 +138,7 @@ class TokenSerializer(serializers.Serializer):
             'unique': 'Пользователь с таким именем уже существует!',
         },
     )
-    confirmation_code = serializers.CharField(
+    confirmation_code = CharField(
         max_length=settings.LIMIT_CODE,
         required=True
     )
