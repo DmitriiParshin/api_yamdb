@@ -50,24 +50,34 @@ class Genre(CategoryGenreModel):
         verbose_name_plural = 'Жанры'
 
 
-class Review(models.Model):
-    SCORE_CHOICES = zip(range(1, 11), range(1, 11))
-    title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='reviews'
-    )
+class ReviewCommentModel(models.Model):
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='reviews'
+        User, on_delete=models.CASCADE,
     )
-    score = models.IntegerField(choices=SCORE_CHOICES, default=1)
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True,
     )
 
     class Meta:
+        abstract = True
+        ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.text[:settings.OUTPUT_LENGTH]
+
+class Review(ReviewCommentModel):
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE
+    )
+    score = models.SmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
+
+    class Meta(ReviewCommentModel.Meta):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('-pub_date',)
+        default_related_name = 'reviews'
         constraints = [
             models.UniqueConstraint(
                 fields=('title', 'author'),
@@ -75,26 +85,13 @@ class Review(models.Model):
             ),
         ]
 
-    def __str__(self):
-        return self.text[:settings.OUTPUT_LENGTH]
 
-
-class Comment(models.Model):
+class Comment(ReviewCommentModel):
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments'
-    )
-    text = models.TextField()
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments'
-    )
-    pub_date = models.DateTimeField(
-        'Дата добавления', auto_now_add=True, db_index=True
+        Review, on_delete=models.CASCADE
     )
 
-    class Meta:
+    class Meta(ReviewCommentModel.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ('-pub_date',)
-
-    def __str__(self):
-        return self.text[:settings.OUTPUT_LENGTH]
+        default_related_name = 'comments'
