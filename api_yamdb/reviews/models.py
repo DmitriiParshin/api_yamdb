@@ -7,9 +7,13 @@ from django.db import models
 from users.models import User
 
 
+def get_year_now():
+    return datetime.now().year
+
+
 class CategoryGenreModel(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField('Название категории', max_length=256)
+    slug = models.SlugField('Слаг категории', max_length=50, unique=True)
 
     def __str__(self):
         return self.slug
@@ -20,13 +24,21 @@ class CategoryGenreModel(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256)
-    year = models.PositiveSmallIntegerField(db_index=True, validators=[
-        MinValueValidator(1730), MaxValueValidator(datetime.now().year)])
-    description = models.TextField(null=True, blank=True)
-    genre = models.ManyToManyField('Genre', blank=True, related_name='titles')
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL,
-                                 null=True, blank=True, related_name='titles')
+    name = models.CharField('Название произведения', max_length=256)
+    year = models.PositiveSmallIntegerField(
+        'Год выпуска произведения', db_index=True, validators=[
+            MinValueValidator(1730), MaxValueValidator(get_year_now())]
+    )
+    description = models.TextField('Описание произведения', null=True,
+                                   blank=True)
+    genre = models.ManyToManyField(
+        'Genre', verbose_name='Жанр произведения', blank=True,
+        related_name='titles'
+    )
+    category = models.ForeignKey(
+        'Category', verbose_name='Жанр произведения',
+        on_delete=models.SET_NULL, null=True, blank=True, related_name='titles'
+    )
 
     class Meta:
         verbose_name = 'Произведение'
@@ -44,16 +56,15 @@ class Category(CategoryGenreModel):
 
 
 class Genre(CategoryGenreModel):
-
     class Meta(CategoryGenreModel.Meta):
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
 
 class ReviewCommentModel(models.Model):
-    text = models.TextField()
+    text = models.TextField('Текст')
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, verbose_name='Автор', on_delete=models.CASCADE,
     )
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True,
@@ -66,12 +77,14 @@ class ReviewCommentModel(models.Model):
     def __str__(self):
         return self.text[:settings.OUTPUT_LENGTH]
 
+
 class Review(ReviewCommentModel):
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE
+        Title, verbose_name='Произведение', on_delete=models.CASCADE
     )
     score = models.SmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)]
+        'Оценка произведения',  validators=[MinValueValidator(1),
+                                            MaxValueValidator(10)]
     )
 
     class Meta(ReviewCommentModel.Meta):
@@ -88,7 +101,7 @@ class Review(ReviewCommentModel):
 
 class Comment(ReviewCommentModel):
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE
+        Review, verbose_name='Отзыв', on_delete=models.CASCADE
     )
 
     class Meta(ReviewCommentModel.Meta):
