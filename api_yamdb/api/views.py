@@ -27,7 +27,7 @@ from django.db import IntegrityError
 
 
 class TitleViewSet(ModelViewSet):
-    queryset = Title.objects.annotate(Avg("reviews__score"))
+    queryset = Title.objects.annotate(rating=Avg("reviews__score"))
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     ordering_fields = ('name',)
