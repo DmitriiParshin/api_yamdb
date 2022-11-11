@@ -99,4 +99,4 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'{file.name.split("/")[-1]} '
                                                  f'uploaded successfully!!!'))
         except FileNotFoundError:
-            raise CommandError(f'Sorry, the required file does not exist.')
+            raise CommandError('Sorry, the required file does not exist.')
