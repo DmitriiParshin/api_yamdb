@@ -9,9 +9,9 @@ class User(AbstractUser):
     MODERATOR = 'moderator'
     USER = 'user'
     ROLE_CHOICES = (
-        (USER, 'user'),
-        (MODERATOR, 'moderator'),
-        (ADMIN, 'admin'),
+        (USER, 'Пользователь'),
+        (MODERATOR, 'Модератор'),
+        (ADMIN, 'Администратор'),
     )
     username_validator = UsernameRegexValidator()
     username = models.CharField(
@@ -32,7 +32,7 @@ class User(AbstractUser):
         'Роль',
         max_length=max(len(role) for role, _ in ROLE_CHOICES),
         choices=ROLE_CHOICES,
-        default='user'
+        default=USER
     )
     bio = models.TextField('Биография', blank=True)
     first_name = models.CharField(
@@ -52,7 +52,7 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role in (self.ADMIN, self.is_superuser, self.is_staff)
+        return self.role == self.ADMIN or self.is_superuser or self.is_staff
 
     class Meta:
         verbose_name = 'Пользователь'

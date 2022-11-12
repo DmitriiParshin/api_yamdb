@@ -118,6 +118,8 @@ class UserViewSet(ModelViewSet):
 
 @api_view(['POST'])
 def signup(request):
+    LOGIN_ERROR = 'Это имя пользователя уже занято!'
+    EMAIL_ERROR = 'Эта электронная почта уже занята!'
     serializer = SignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     try:
@@ -128,8 +130,11 @@ def signup(request):
             email=email
         )
     except IntegrityError:
-        return Response('Это имя или email уже занято',
-                        status.HTTP_400_BAD_REQUEST)
+        real_error = (LOGIN_ERROR
+                      if User.objects.filter(username=username).exists()
+                      else EMAIL_ERROR)
+        return Response(real_error, status.HTTP_400_BAD_REQUEST)
+
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
         subject='Регистрация в проекте YaMDb',
