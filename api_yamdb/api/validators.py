@@ -1,5 +1,11 @@
+from datetime import datetime
+
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core import exceptions
+
+
+def get_year_now():
+    return datetime.now().year
 
 
 class UsernameRegexValidator(UnicodeUsernameValidator):

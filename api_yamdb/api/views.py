@@ -2,15 +2,16 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
 from rest_framework import status
 from rest_framework.decorators import api_view, action
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import RetrieveUpdateAPIView, get_object_or_404
+from rest_framework.generics import (get_object_or_404, ListCreateAPIView,
+                                     DestroyAPIView, RetrieveDestroyAPIView)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework_simplejwt.tokens import AccessToken
 
 from api.filters import TitlesFilter
@@ -27,9 +28,9 @@ from django.db import IntegrityError
 
 
 class TitleViewSet(ModelViewSet):
-    queryset = Title.objects.annotate(rating=Avg("reviews__score"))
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
     ordering_fields = ('name',)
     filterset_class = TitlesFilter
 
@@ -39,18 +40,13 @@ class TitleViewSet(ModelViewSet):
         return TitleWriteSerializer
 
 
-class CategoryGenreMixinViewSet(RetrieveUpdateAPIView, ModelViewSet):
+class CategoryGenreMixinViewSet(ListCreateAPIView, DestroyAPIView,
+                                GenericViewSet):
     pagination_class = PageNumberPagination
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
-
-    def retrieve(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class CategoryViewSet(CategoryGenreMixinViewSet):
@@ -103,7 +99,7 @@ class UserViewSet(ModelViewSet):
             serializer_class=UserEditSerializer)
     def users_own_profile(self, request):
         user = request.user
-        if request.method == "PATCH":
+        if request.method == 'PATCH':
             serializer = self.get_serializer(
                 user,
                 data=request.data,

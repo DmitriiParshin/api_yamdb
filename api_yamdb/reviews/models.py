@@ -1,33 +1,31 @@
-from datetime import datetime
-
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from api.validators import get_year_now
 from users.models import User
 
 
-def get_year_now():
-    return datetime.now().year
-
-
 class CategoryGenreModel(models.Model):
-    name = models.CharField('Название категории', max_length=256)
-    slug = models.SlugField('Слаг категории', max_length=50, unique=True)
-
-    def __str__(self):
-        return self.slug
+    name = models.CharField('Название категории',
+                            max_length=settings.LIMIT_NAME)
+    slug = models.SlugField('Слаг категории', max_length=settings.LIMIT_SLUG,
+                            unique=True)
 
     class Meta:
         abstract = True
         ordering = ('name',)
 
+    def __str__(self):
+        return self.slug
+
 
 class Title(models.Model):
-    name = models.CharField('Название произведения', max_length=256)
+    name = models.CharField('Название произведения',
+                            max_length=settings.LIMIT_NAME)
     year = models.PositiveSmallIntegerField(
         'Год выпуска произведения', db_index=True, validators=[
-            MinValueValidator(1730), MaxValueValidator(get_year_now())]
+            MinValueValidator(1730), MaxValueValidator(get_year_now)]
     )
     description = models.TextField('Описание произведения', null=True,
                                    blank=True)
@@ -36,7 +34,7 @@ class Title(models.Model):
         related_name='titles'
     )
     category = models.ForeignKey(
-        'Category', verbose_name='Жанр произведения',
+        'Category', verbose_name='Категория произведения',
         on_delete=models.SET_NULL, null=True, blank=True, related_name='titles'
     )
 
@@ -47,6 +45,9 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name[:settings.OUTPUT_LENGTH]
+
+    def get_genre(self):
+        return [str(_) for _ in self.genre.all()]
 
 
 class Category(CategoryGenreModel):
