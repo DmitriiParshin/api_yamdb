@@ -2,12 +2,13 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from rest_framework import status
 from rest_framework.decorators import api_view, action
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import (get_object_or_404, ListCreateAPIView,
-                                     DestroyAPIView, RetrieveDestroyAPIView)
+                                     DestroyAPIView)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -47,6 +48,9 @@ class CategoryGenreMixinViewSet(ListCreateAPIView, DestroyAPIView,
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
+
+    def get(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class CategoryViewSet(CategoryGenreMixinViewSet):

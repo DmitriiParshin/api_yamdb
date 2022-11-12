@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from reviews.models import Title, Category, Genre, Review, Comment
+from reviews.models import Title, Category, Genre, Review, Comment, GenreTitle
 
 
 class GenreInline(admin.TabularInline):
-    model = Title.genre.through
+    model = GenreTitle
 
 
 @admin.register(Title)
@@ -15,6 +15,7 @@ class TitleAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_editable = ('category',)
     search_fields = ('name', 'year')
+    list_select_related = ('category',)
 
 
 @admin.register(Category)

@@ -25,7 +25,8 @@ class Title(models.Model):
                             max_length=settings.LIMIT_NAME)
     year = models.PositiveSmallIntegerField(
         'Год выпуска произведения', db_index=True, validators=[
-            MinValueValidator(1730), MaxValueValidator(get_year_now)]
+            MinValueValidator(settings.MIN_YEAR),
+            MaxValueValidator(get_year_now)]
     )
     description = models.TextField('Описание произведения', null=True,
                                    blank=True)
@@ -62,6 +63,13 @@ class Genre(CategoryGenreModel):
         verbose_name_plural = 'Жанры'
 
 
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(Genre, verbose_name='Жанр',
+                              on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, verbose_name='Произведениe',
+                              on_delete=models.CASCADE)
+
+
 class ReviewCommentModel(models.Model):
     text = models.TextField('Текст')
     author = models.ForeignKey(
@@ -86,8 +94,10 @@ class Review(ReviewCommentModel):
     score = models.SmallIntegerField(
         'Оценка произведения',
         validators=[
-            MinValueValidator(1, message='Оценка должна быть больше или равна 1'),
-            MaxValueValidator(10, message='Оценка должна быть меньше или равна 10')
+            MinValueValidator(1,
+                              message='Оценка должна быть больше или равна 1'),
+            MaxValueValidator(10,
+                              message='Оценка должна быть меньше или равна 10')
         ],
         default=None
     )
