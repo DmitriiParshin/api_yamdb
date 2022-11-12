@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
-from api.validators import UsernameRegexValidator, username_me
+from api.validators import UsernameValidator, username_me
 
 
 class User(AbstractUser):
@@ -13,12 +13,11 @@ class User(AbstractUser):
         (MODERATOR, 'Модератор'),
         (ADMIN, 'Администратор'),
     )
-    username_validator = UsernameRegexValidator()
     username = models.CharField(
         'Имя пользователя',
         max_length=settings.LIMIT_USERNAME,
         unique=True,
-        validators=[username_validator, username_me],
+        validators=[UsernameValidator(), username_me],
         error_messages={
             'unique': 'Пользователь с таким именем уже существует!',
         },
