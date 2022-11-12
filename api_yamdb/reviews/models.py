@@ -84,8 +84,12 @@ class Review(ReviewCommentModel):
         Title, verbose_name='Произведение', on_delete=models.CASCADE
     )
     score = models.SmallIntegerField(
-        'Оценка произведения', validators=[MinValueValidator(1),
-                                           MaxValueValidator(10)]
+        'Оценка произведения',
+        validators=[
+            MinValueValidator(1, message='Оценка должна быть больше или равна 1'),
+            MaxValueValidator(10, message='Оценка должна быть меньше или равна 10')
+        ],
+        default=None
     )
 
     class Meta(ReviewCommentModel.Meta):
