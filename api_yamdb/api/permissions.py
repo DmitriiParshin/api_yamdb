@@ -28,4 +28,4 @@ class IsAdmin(BasePermission):
     """Только для аутентифицированных пользователей имеющих статус
     администратора или суперюзера."""
     def has_permission(self, request, view):
-        return (request.user.is_authenticated and request.user.is_admin)
+        return request.user.is_authenticated and request.user.is_admin

@@ -41,7 +41,7 @@ class TitleReadSerializer(ModelSerializer):
 class TitleWriteSerializer(ModelSerializer):
     year = IntegerField(
         validators=[MinValueValidator(1730),
-                    MaxValueValidator(get_year_now())]
+                    MaxValueValidator(get_year_now)]
     )
     genre = SlugRelatedField(
         slug_field='slug', many=True, queryset=Genre.objects.all()
@@ -55,8 +55,7 @@ class TitleWriteSerializer(ModelSerializer):
         model = Title
 
     def to_representation(self, value):
-        serializer = TitleReadSerializer(value)
-        return serializer.data
+        return TitleReadSerializer(value).data
 
 
 class ReviewSerializer(ModelSerializer):
@@ -97,7 +96,6 @@ class CommentSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
-
     class Meta:
         fields = ('username', 'email', 'first_name',
                   'last_name', 'bio', 'role')
