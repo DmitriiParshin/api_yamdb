@@ -1,10 +1,5 @@
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core import exceptions
-
-
-class UsernameRegexValidator(UnicodeUsernameValidator):
-    regex = r'^[\w.@+-]+\Z'
-    flags = 0
+from django.core.validators import RegexValidator
 
 
 def username_me(value):
@@ -13,3 +8,11 @@ def username_me(value):
             'Имя пользователя "me" использовать нельзя!'
         )
     return value
+
+
+class UsernameValidator(RegexValidator):
+    regex = r'^[\w.@+-]+\Z'
+    message = ('Недопустимые символы в имени пользователя. '
+               'Используйте не более 150 символов. '
+               'Только буквы, цифры и @/./+/-/_')
+    code = 'invalid_format'
