@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
-from api.validators import UsernameValidator, username_me
+from api.validators import username_validator, username_me
 
 
 class User(AbstractUser):
@@ -17,7 +17,7 @@ class User(AbstractUser):
         'Имя пользователя',
         max_length=settings.LIMIT_USERNAME,
         unique=True,
-        validators=[UsernameValidator(), username_me],
+        validators=[username_validator, username_me],
         error_messages={
             'unique': 'Пользователь с таким именем уже существует!',
         },
