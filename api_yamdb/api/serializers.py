@@ -10,7 +10,7 @@ from rest_framework.relations import SlugRelatedField
 from reviews.models import (Genre, Category, Title, Review, Comment,
                             get_year_now)
 from users.models import User
-from api.validators import username_me, username_validator
+from api.validators import username_validator
 
 
 class CategorySerializer(ModelSerializer):
@@ -102,7 +102,7 @@ class UserSerializer(ModelSerializer):
         model = User
 
     def validate_username(self, value):
-        return username_me(value)
+        return username_validator(value)
 
 
 class UserEditSerializer(UserSerializer):
@@ -114,7 +114,7 @@ class SignupSerializer(Serializer):
     username = CharField(
         max_length=settings.LIMIT_USERNAME,
         required=True,
-        validators=[username_validator, username_me],
+        validators=(username_validator,),
     )
     email = EmailField(
         max_length=settings.LIMIT_EMAIL,
@@ -126,7 +126,7 @@ class TokenSerializer(Serializer):
     username = CharField(
         max_length=settings.LIMIT_USERNAME,
         required=True,
-        validators=[username_validator, username_me],
+        validators=(username_validator,),
     )
     confirmation_code = CharField(
         max_length=settings.LIMIT_CODE,
@@ -134,4 +134,4 @@ class TokenSerializer(Serializer):
     )
 
     def validate_username(self, value):
-        return username_me(value)
+        return username_validator(value)

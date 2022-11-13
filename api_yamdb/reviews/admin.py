@@ -17,6 +17,13 @@ class TitleAdmin(admin.ModelAdmin):
     search_fields = ('name', 'year')
     list_select_related = ('category',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('genre')
+
+    def get_genre(self, obj):
+        return ', '.join([str(_) for _ in obj.genre.all()])
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

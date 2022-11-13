@@ -47,9 +47,6 @@ class Title(models.Model):
     def __str__(self):
         return self.name[:settings.OUTPUT_LENGTH]
 
-    def get_genre(self):
-        return [str(_) for _ in self.genre.all()]
-
 
 class Category(CategoryGenreModel):
     class Meta(CategoryGenreModel.Meta):
@@ -99,7 +96,7 @@ class Review(ReviewCommentModel):
             MaxValueValidator(10,
                               message='Оценка должна быть меньше или равна 10')
         ],
-        default=None
+        default=1
     )
 
     class Meta(ReviewCommentModel.Meta):
