@@ -12,7 +12,7 @@ def username_validator(value):
     unmatched = re.sub(r"[\w.@+-]", "", value)
     if value == "me":
         raise ValidationError('Имя пользователя "me" использовать нельзя!')
-    elif "" in unmatched:
+    elif value in unmatched:
         raise ValidationError(
             f"Имя пользователя не должно содержать {unmatched}"
         )
