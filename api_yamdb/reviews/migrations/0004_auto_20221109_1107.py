@@ -6,16 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reviews', '0003_title_rating'),
+        ("reviews", "0003_title_rating"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='title',
-            name='rating',
+            model_name="title",
+            name="rating",
         ),
         migrations.AddConstraint(
-            model_name='review',
-            constraint=models.UniqueConstraint(fields=('title', 'author'), name='unique_review'),
+            model_name="review",
+            constraint=models.UniqueConstraint(
+                fields=("title", "author"), name="unique_review"
+            ),
         ),
     ]

@@ -7,28 +7,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reviews', '0004_auto_20221109_1107'),
+        ("reviews", "0004_auto_20221109_1107"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='category',
-            name='name',
+            model_name="category",
+            name="name",
             field=models.CharField(max_length=256),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='name',
+            model_name="genre",
+            name="name",
             field=models.CharField(max_length=256),
         ),
         migrations.AlterField(
-            model_name='title',
-            name='name',
+            model_name="title",
+            name="name",
             field=models.CharField(max_length=256),
         ),
         migrations.AlterField(
-            model_name='title',
-            name='year',
-            field=models.PositiveSmallIntegerField(db_index=True, validators=[django.core.validators.MinValueValidator(1730), django.core.validators.MaxValueValidator(2022)]),
+            model_name="title",
+            name="year",
+            field=models.PositiveSmallIntegerField(
+                db_index=True,
+                validators=[
+                    django.core.validators.MinValueValidator(1730),
+                    django.core.validators.MaxValueValidator(2022),
+                ],
+            ),
         ),
     ]

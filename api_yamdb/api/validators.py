@@ -9,13 +9,11 @@ def get_year_now():
 
 
 def username_validator(value):
-    unmatched = re.sub(r'[\w.@+-]', '', value)
-    if value == 'me':
+    unmatched = re.sub(r"[\w.@+-]", "", value)
+    if value == "me":
+        raise ValidationError('Имя пользователя "me" использовать нельзя!')
+    elif "" in unmatched:
         raise ValidationError(
-            'Имя пользователя "me" использовать нельзя!'
-        )
-    elif '' in unmatched:
-        raise ValidationError(
-            f'Имя пользователя не должно содержать {unmatched}'
+            f"Имя пользователя не должно содержать {unmatched}"
         )
     return value
