@@ -4,21 +4,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, CurrentUserDefault, EmailField
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
-from rest_framework.serializers import (
-    IntegerField,
-    ModelSerializer,
-    Serializer,
-)
+from rest_framework.serializers import (IntegerField, ModelSerializer,
+                                        Serializer)
 
 from api.validators import username_validator
-from reviews.models import (
-    Category,
-    Comment,
-    Genre,
-    Review,
-    Title,
-    get_year_now,
-)
+from reviews.models import (Category, Comment, Genre, Review, Title,
+                            get_year_now)
 from users.models import User
 
 

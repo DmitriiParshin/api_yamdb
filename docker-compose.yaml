@@ -1,13 +1,19 @@
 version: '3.8'
 
 services:
+
   db:
+    container_name: db
     image: postgres:13.0-alpine
     volumes:
-      - /var/lib/postgresql/data/
+      - postgres_db:/var/lib/postgresql/data/
     env_file:
       - ./.env
+    networks:
+      - custom
+
   web:
+    container_name: web
     build: .
     restart: always
     volumes:
@@ -17,7 +23,11 @@ services:
       - db
     env_file:
       - ./.env
+    networks:
+      - custom
+
   nginx:
+    container_name: nginx
     image: nginx:1.21.3-alpine
     ports:
       - "80:80"
@@ -27,7 +37,12 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - web
+    networks:
+      - custom
+
 volumes:
+  postgres_db:
   static_value:
   media_value:
-
+networks:
+  custom:

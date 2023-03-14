@@ -7,11 +7,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action, api_view
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.generics import (
-    DestroyAPIView,
-    ListCreateAPIView,
-    get_object_or_404,
-)
+from rest_framework.generics import (DestroyAPIView, ListCreateAPIView,
+                                     get_object_or_404)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -19,23 +16,13 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
 
 from api.filters import TitlesFilter
-from api.permissions import (
-    IsAdmin,
-    IsAdminOrOwnerOrReadOnly,
-    IsAdminOrReadOnly,
-)
-from api.serializers import (
-    CategorySerializer,
-    CommentSerializer,
-    GenreSerializer,
-    ReviewSerializer,
-    SignupSerializer,
-    TitleReadSerializer,
-    TitleWriteSerializer,
-    TokenSerializer,
-    UserEditSerializer,
-    UserSerializer,
-)
+from api.permissions import (IsAdmin, IsAdminOrOwnerOrReadOnly,
+                             IsAdminOrReadOnly)
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             GenreSerializer, ReviewSerializer,
+                             SignupSerializer, TitleReadSerializer,
+                             TitleWriteSerializer, TokenSerializer,
+                             UserEditSerializer, UserSerializer)
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
 

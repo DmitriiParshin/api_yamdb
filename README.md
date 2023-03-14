@@ -1,5 +1,4 @@
 # API_YamDB
-
 REST API для сервиса YaMDb — базы отзывов о фильмах, книгах и музыке.
 
 Проект YaMDb собирает отзывы пользователей на произведения. Произведения делятся на категории: «Книги», «Фильмы», «Музыка».
@@ -38,7 +37,6 @@ REST API для сервиса YaMDb — базы отзывов о фильма
 - **Суперюзер Django** — обладает правами администратора (*admin*)
 
 ## Ресурсы API YaMDb
-
 - Ресурс AUTH: аутентификация.
 - Ресурс USERS: пользователи.
 - Ресурс TITLES: произведения, к которым пишут отзывы (определённый фильм, книга или песня).
@@ -46,11 +44,8 @@ REST API для сервиса YaMDb — базы отзывов о фильма
 - Ресурс GENRES: жанры произведений. Одно произведение может быть привязано к нескольким жанрам.
 - Ресурс REVIEWS: отзывы на произведения. Отзыв привязан к определённому произведению.
 - Ресурс COMMENTS: комментарии к отзывам. Комментарий привязан к определённому отзыву.
-______________________________________________________________________
-
-
+_______________________________________________________________________________
 ## Как запустить проект:
-
 1) Клонируйте репозиторий с проектом и перейдите в каталог с ним:
 ```
 git clone https://github.com/DmitriiParshin/api_yamdb
@@ -58,22 +53,21 @@ cd api_yamdb
 ```
 2) Выполните команду для создания образов и запуска в контейнере приложения, сервера и базы данных
 ```
-docker-compose up -d --build
+sudo docker-compose up -d --build
 ```
 3) Создайте и выполните миграции:
 ```
-docker-compose exec web python manage.py makemigrations reviews users
-docker-compose exec web python manage.py migrate
+sudo docker-compose exec web python manage.py makemigrations
+sudo docker-compose exec web python manage.py migrate
 ```
-4) Создайте суперпользователя и соберите статику:
+4) Соберите статику  и создайте суперпользователя:
 ```
-docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --no-input 
+sudo docker-compose exec web python manage.py createsuperuser
+sudo docker-compose exec web python manage.py collectstatic --no-input 
 ```
 __________________________________
-
 Ваш проект запустился на http://localhost/
 
 Полная документация доступна по адресу http://localhost/redoc/
 
-Админка для проверки и наполнения БД http://localhost/admin/ 
+Админка для проверки и наполнения БД http://localhost/admin/
